@@ -1,5 +1,50 @@
 <!DOCTYPE html>
 <html>
   <%- include('./partials/head'); %>
-  <body></body>
+  <body>
+    <%- include('./partials/sidebar'); %>
+
+    <div class="main">
+        <h1><%= title %></h1>
+
+        <a href="/create" class="button primary">Add new</a>
+
+        <table class="items">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Unit</th>
+                    <th>Description</th>
+                    <th>Category</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            <% if (items && items.length > 0) { %>
+                <% items.forEach(item => { %>
+                <tr>
+                    <td><%= item.id %></td>
+                    <td><%= item.title %></td>
+                    <td><%= Number(item.price).toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %></td>
+                    <td><%= item.quantity %></td>
+                    <td><%= item.unit %></td>
+                    <td><%= item.description %></td>
+                    <td><%= item.category_title %></td>
+                    <td><a href="/<%= item.id %>/edit" class="button edit">Edit</a></td>
+                    <td><a href="/<%= item.id %>/delete" class="button delete" onclick="return confirm('Delete item?')">Delete</a></td>
+                </tr>
+                <% }); %>
+            <% } else { %>
+                <tr>
+                    <td colspan="9">No items found.</td>
+                </tr>
+            <% } %>
+            </tbody>
+        </table>
+    </div>
+  </body>
 </html>

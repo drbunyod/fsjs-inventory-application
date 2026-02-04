@@ -13,7 +13,6 @@ CREATE TABLE IF NOT EXISTS items (
     price NUMERIC(12,2) NOT NULL DEFAULT 0.00,
     quantity INTEGER NOT NULL DEFAULT 0,
     unit VARCHAR(3) NOT NULL,
-    image_path TEXT,
     category_id BIGINT NOT NULL REFERENCES categories(id)
 );
 

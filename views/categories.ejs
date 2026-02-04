@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <%- include('./partials/head'); %>
+  <body>
+    <%- include('./partials/sidebar'); %>
+
+    <div class="main">
+        <h1><%= title %></h1>
+
+        <a href="/categories/create" class="button primary">Add new</a>
+
+        <table class="categories">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            <% if (categories && categories.length > 0) { %>
+                <% categories.forEach(category => { %>
+                <tr>
+                    <td><%= category.id %></td>
+                    <td><%= category.title %></td>
+                    <td><a href="/categories/<%= category.id %>/edit" class="button edit">Edit</a></td>
+                    <td><a href="/categories/<%= category.id %>/delete" class="button delete" onclick="return confirm('Delete category?')">Delete</a></td>
+                </tr>
+                <% }); %>
+            <% } else { %>
+                <tr>
+                    <td colspan="4">No categories found.</td>
+                </tr>
+            <% } %>
+            </tbody>
+        </table>
+    </div>
+
+    <% if (error && error === 'delete') { %>
+    <script>
+        alert('Category with items in it cannot be deleted.');
+        window.location.href = '/categories';
+    </script>
+    <% } %>
+  </body>
+</html>

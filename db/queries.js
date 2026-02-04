@@ -1,7 +1,7 @@
 const pool = require('./pool');
 
 const selectCategories = async () => {
-    const { rows } = await pool.query('SELECT * FROM categories');
+    const { rows } = await pool.query('SELECT * FROM categories ORDER BY id');
     return rows;
 };
 
@@ -23,7 +23,7 @@ const deleteCategory = async (id) => {
 };
 
 const selectItems = async () => {
-    const { rows } = await pool.query('SELECT * FROM items');
+    const { rows } = await pool.query('SELECT * FROM items ORDER BY id');
     return rows;
 };
 
@@ -37,22 +37,34 @@ const selectItemsByCategory = async (category_id) => {
     return rows;
 };
 
-const insertItem = async (title, description, price, quantity, unit, image_path, category_id) => {
+const insertItem = async (title, description, price, quantity, unit, category_id) => {
     await pool.query(
-        'INSERT INTO items (title, description, price, quantity, unit, image_path, category_id) VALUES ($1, $2, $3, $4, $5, $6, $7)',
-        [title, description, price, quantity, unit, image_path, category_id]
+        'INSERT INTO items (title, description, price, quantity, unit, category_id) VALUES ($1, $2, $3, $4, $5, $6)',
+        [title, description, price, quantity, unit, category_id]
     );
 };
 
-const updateItem = async (id, title, description, price, quantity, unit, image_path, category_id) => {
+const updateItem = async (id, title, description, price, quantity, unit, category_id) => {
     await pool.query(
-        'UPDATE items SET title = $2, description = $3, price = $4, quantity = $5, unit = $6, image_path = $7, category_id = $8 WHERE id = $1',
-        [id, title, description, price, quantity, unit, image_path, category_id]
+        'UPDATE items SET title = $2, description = $3, price = $4, quantity = $5, unit = $6, category_id = $7 WHERE id = $1',
+        [id, title, description, price, quantity, unit, category_id]
     );
 };
 
 const deleteItem = async (id) => {
     await pool.query('DELETE FROM items WHERE id = $1', [id]);
+};
+
+const countCategoryItems = async (category_id) => {
+    const { rows } = await pool.query('SELECT COUNT(*) FROM items WHERE category_id = $1', [category_id]);
+    return rows[0].count;
+};
+
+const selectItemsJoinCategories = async () => {
+    const { rows } = await pool.query(
+        'SELECT items.id, items.title, items.description, items.price, items.quantity, items.unit, categories.title AS category_title FROM items LEFT JOIN categories ON items.category_id = categories.id ORDER BY category_title, items.id'
+    );
+    return rows;
 };
 
 module.exports = {
@@ -66,5 +78,7 @@ module.exports = {
   selectItemsByCategory,
   insertItem,
   updateItem,
-  deleteItem
+  deleteItem,
+  countCategoryItems,
+  selectItemsJoinCategories
 };
